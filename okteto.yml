@@ -1,0 +1,13 @@
+build:
+  contacts-service:
+    context: .
+
+deploy:
+  - helm upgrade --install contacts-service chart
+    --set contacts.image=${OKTETO_BUILD_CONTACTS_SERVICE_IMAGE}
+
+dev:
+  contacts-service:
+    command: npm start
+    sync:
+      - .:/app
