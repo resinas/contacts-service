@@ -8,7 +8,7 @@ var debug = require('debug')('contacts-2:server');
 router.get('/', async function(req, res, next) {
   try {
     const result = await Contact.find();
-    res.send(result);
+    res.send(result.map((c) => c.cleanup()));
   } catch(e) {
     debug("DB problem", e);
     res.sendStatus(500);
@@ -28,8 +28,13 @@ router.post('/', async function(req, res, next) {
     await contact.save();
     return res.sendStatus(201);
   } catch(e) {
-    debug("DB problem", e);
-    res.sendStatus(500);
+    if (e.errors) {
+      debug("Validation problem when saving");
+      res.status(400).send({error: e.message});
+    } else {
+      debug("DB problem", e);
+      res.sendStatus(500);
+    }
   }
 });
 
