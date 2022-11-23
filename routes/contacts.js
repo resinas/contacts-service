@@ -1,22 +1,36 @@
 var express = require('express');
 var router = express.Router();
 var fakesocial = require('../services/fakeservice');
-
-var contacts = [
-  {"name": "peter", "phone": 12445},
-  {"name": "john", "phone": 6893}
-]
+var Contact = require('../models/contact');
+var debug = require('debug')('contacts-2:server');
 
 /* GET contacts listing. */
-router.get('/', function(req, res, next) {
-  res.send(contacts);
+router.get('/', async function(req, res, next) {
+  try {
+    const result = await Contact.find();
+    res.send(result);
+  } catch(e) {
+    debug("DB problem", e);
+    res.sendStatus(500);
+  }
 });
 
 /* POST contact */
-router.post('/', function(req, res, next) {
-  var contact = req.body;
-  contacts.push(contact);
-  res.sendStatus(201);
+router.post('/', async function(req, res, next) {
+  const {name, phone} = req.body;
+
+  const contact = new Contact({
+    name, 
+    phone
+  });
+
+  try {
+    await contact.save();
+    return res.sendStatus(201);
+  } catch(e) {
+    debug("DB problem", e);
+    res.sendStatus(500);
+  }
 });
 
 /* GET contact/id */
