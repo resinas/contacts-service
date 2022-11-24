@@ -5,6 +5,7 @@ build:
 deploy:
   - helm upgrade --install contacts-service chart
     --set contacts.image=${OKTETO_BUILD_CONTACTS_SERVICE_IMAGE}
+    --set contactsMongoUrl=$CONTACTS_DB_URL
 
 dev:
   contacts-service:

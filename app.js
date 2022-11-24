@@ -20,6 +20,7 @@ app.use('/api/v1/contacts', contactsRouter);
 // setup connection to mongo
 const mongoose = require('mongoose');
 const DB_URL = (process.env.DB_URL || 'mongodb://localhost/test')
+console.log("Connecting to database: %s", DB_URL);
 
 mongoose.connect(DB_URL);
 const db = mongoose.connection;
